@@ -33,6 +33,10 @@ app.get('/stat', (req,res) => {
   res.render('statistics');
 });
 
+app.get('/inventory',(req,res)=>{
+  res.render('inventory');
+});
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
