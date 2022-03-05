@@ -33,9 +33,17 @@ app.get('/stat', (req,res) => {
   res.render('statistics');
 });
 
+app.get('/mobile', (req,res) => {
+  res.render('mobile_client');
+})
+
 app.get('/inventory',(req,res)=>{
   res.render('inventory');
 });
+
+app.get('/session_man',(req, res) => {
+  res.render('session_management');
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

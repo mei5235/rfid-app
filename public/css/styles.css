@@ -797,10 +797,11 @@ a.label:hover, a.label:focus {
   list-style-type: none; }
 
 .sidebar ul.nav li a {
-  height: 50px;
+  height: 70px;
   font-size: 15px;
   line-height: 2em;
-  color: #444444; }
+  color: #444444;
+  text-align: center; }
 
 .sidebar ul.nav ul.children {
   width: auto;
