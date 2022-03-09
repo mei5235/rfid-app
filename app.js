@@ -6,10 +6,14 @@ var bodyParser = require('body-parser');
 
 var logger = require('morgan');
 
+var cors = require('cors');
+
 // var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
+var apiRouter = require('./routes/resource_api.js');
 
 var app = express();
+app.use('/api',apiRouter);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,7 +28,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use('/', indexRouter);
+app.use(cors());
+
 app.get('/',(req,res) => {
   res.render('index', { title: 'Express' });
 })
@@ -35,6 +40,11 @@ app.get('/stat', (req,res) => {
 
 app.get('/mobile', (req,res) => {
   res.render('mobile_client');
+})
+
+//depleted
+app.get('/mobile_demo', (req,res) => {
+  res.render('mobile_demo');
 })
 
 app.get('/inventory',(req,res)=>{
