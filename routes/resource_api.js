@@ -9,13 +9,15 @@ var router = express.Router();
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
-/* GET home page. */
+// TODO remap apis
+
+/* GET get book */
 router.get('/', function (req, res, next) {
   // console.log(req.query)
   db.pool.getConnection((err, conn) => {
     conn.query('SELECT * FROM Books', function (err, rows) {
       if (err) throw err;
-      res.json(rows);
+      res.json({data:rows});
       conn.release();
     });
   });
