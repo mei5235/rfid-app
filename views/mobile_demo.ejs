@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>TEST client</h1>
+    <button onclick="connectReader()">connect reader</button>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"></script>
+<script>
+    let deviceFilter = {
+        vendorId: 0x1a86,
+        productId: 0xe010
+    };
+    let requestParams = {
+        filters: [deviceFilter]
+    };
+    let outputReportId = 0x01;
+    let outputReport = new Uint8Array([42]);
+
+    function handleConnectedDevice(e) {
+        console.log("Device connected: " + e.device.productName);
+    }
+
+    function handleDisconnectedDevice(e) {
+        console.log("Device disconnected: " + e.device.productName);
+    }
+
+    function handleInputReport(e) {
+        console.log(e.device.productName + ": got input report " + e.reportId);
+        let inputBuf = new Uint8Array(e.data.buffer);
+        var dataString = "";
+        for (var i = 19; i <= 31; i++) {
+            dataString += inputBuf[i];
+        }
+
+        // console.log(typeof(inputBuf[19]))
+        $.ajax('/api/scan', {
+            type: 'POST',
+            dataType: 'JSONP',
+            data: JSON.stringify({
+                "data": dataString
+            }),
+            contentType: "application/json",
+            //contentType: "application/x-www-form-urlencoded",
+            dataType: 'json',
+            success: function (data) {
+                console.log('success');
+                console.log(JSON.stringify(data));
+            },
+            error: function (error) {
+                console.log("some error in fetching the notifications");
+            }
+
+        });
+    }
+
+    navigator.hid.addEventListener("connect", handleConnectedDevice);
+    navigator.hid.addEventListener("disconnect", handleDisconnectedDevice);
+
+    function connectReader(){
+        navigator.hid.requestDevice(requestParams).then((devices) => {
+            if (devices.length == 0) return;
+            devices[0].open().then(() => {
+                console.log("Opened device: " + devices[0].productName);
+                devices[0].addEventListener("inputreport", handleInputReport);
+                devices[0].sendReport(outputReportId, outputReport).then(() => {
+                    console.log("Sent output report " + outputReportId);
+                });
+            });
+        });
+    }
+
+    
+</script>
+
+</html>
